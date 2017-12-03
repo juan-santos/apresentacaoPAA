@@ -1,8 +1,194 @@
 #include "Jogo.h"
+/*procura e sinaliza os elementos móveis*/
+int VerificarExisteMovel(elemento_jt * vetor_jt, int quantidade_elementos) {
+
+    int x = 0;
+    for(int i = 0; i < quantidade_elementos; i++)
+    {
+        if(vetor_jt[i].seta == DIREITA)
+        {
+            if(i != quantidade_elementos - 1)
+            {
+                if(vetor_jt[i].valor > vetor_jt[i + 1].valor)
+                {
+                    x = 1;
+                    vetor_jt[i].movel = 1;
+                }
+                else
+                    vetor_jt[i].movel = 0;
+            }
+            else
+                vetor_jt[i].movel = 0;
+        }
+        else
+        {
+            if(i != 0)
+            {
+                if(vetor_jt[i - 1].valor < vetor_jt[i].valor)
+                {
+                    x = 1;
+                    vetor_jt[i].movel = 1;
+                }
+                else
+                    vetor_jt[i].movel = 0;
+            }
+            else
+                vetor_jt[i].movel = 0;
+        }
+    }
+
+    /*for(int i = 0; i < quantidade_elementos; i++)
+        cout << vetor_jt[i].seta << " ";
+    cout << endl << endl;*/
+
+    return x;
+}
+
+int EncontrarMaiorMovel(int q, elemento_jt * vetor) {
+    int maior = -1;
+    int indice;
+    for(int i = 0; i < q; i++)
+    {
+        if(vetor[i].movel)
+        {
+            if(vetor[i].valor > maior)
+            {
+                maior = vetor[i].valor;
+                indice = i;
+            }
+        }
+    }
+    return indice;
+}
+
+/* MÉTODOS DE RESOLUÇÃO DO PROBLEMA */
+
+void Jogo::JohnsonTrotter(int vetor[], int quantidade_elementos) {
+
+    elemento_jt *vetor_jt = new elemento_jt[quantidade_elementos];
+    for(int i = 0; i < quantidade_elementos; i++) {
+        vetor_jt[i].valor = vetor[i];
+        vetor_jt[i].seta = ESQUERDA;
+    }
+
+    //************ insiro na pilha
+    for(int i = 0; i < quantidade_elementos; i++){
+       this->pilhaPermutacao.Insere(vetor_jt[i].valor);
+       cout << vetor_jt[i].valor << " ";
+    }
+    cout << endl;
+
+    /*repete enquanto houver elementos móveis*/
+    while(VerificarExisteMovel(vetor_jt, quantidade_elementos))
+    {
+        /*procura o maior móvel*/
+        int maior_movel = EncontrarMaiorMovel(quantidade_elementos, vetor_jt);
+
+        /*troca de posição*/
+        elemento_jt aux;
+        aux = vetor_jt[maior_movel];
+        if(vetor_jt[maior_movel].seta == ESQUERDA)
+        {
+            vetor_jt[maior_movel] = vetor_jt[maior_movel - 1];
+            vetor_jt[maior_movel - 1] = aux;
+        }
+        else
+        {
+            vetor_jt[maior_movel] = vetor_jt[maior_movel + 1];
+            vetor_jt[maior_movel + 1] = aux;
+        }
+
+        /*troca a direção dos elementos maiores*/
+        for(int i = 0; i < quantidade_elementos; i++)
+        {
+            if (vetor_jt[i].valor > aux.valor)
+            {
+                if(vetor_jt[i].seta == DIREITA)
+                    vetor_jt[i].seta = ESQUERDA;
+                else
+                    vetor_jt[i].seta = DIREITA;
+            }
+        }
+
+        /*imprime*/
+        for(int i = 0; i < quantidade_elementos; i++){
+           this->pilhaPermutacao.Insere(vetor_jt[i].valor);
+           cout << vetor_jt[i].valor << " ";
+        }
+        cout << endl;
+
+    }
+    free(vetor_jt);
+}
+
+void LexicographicPermute(int quantidade, int * vetor) {
+    int ultima;
+    int i;
+    int j;
+
+    do{
+
+        /*imprime*/
+        for(int i = 0; i < quantidade; i++)
+            cout << vetor[i] << " ";
+        cout << endl;
+
+        /*descobre se ainda é possível permutar e acha i*/
+        ultima = 1;
+        for(i = quantidade - 2; i >= 0; i--)
+        {
+            if(vetor[i] < vetor[i + 1])
+            {
+                ultima = 0;
+                break;
+            }
+        }
+
+        if(!ultima)
+        {
+            /*acha j*/
+            for(j = quantidade - 1; j >= 0; j--)
+            {
+                if(vetor[i] < vetor[j])
+                {
+                    break;
+                }
+            }
+
+            /*inverte i e j*/
+            int aux;
+            aux = vetor[i];
+            vetor[i] = vetor[j];
+            vetor[j] = aux;
+
+            /*inverte a ordem os elementos de i+1 até n*/
+            int b = quantidade - 1;
+            int q = quantidade - i - 1;
+            int inicial = i + 1;
+            int final0;
+
+            if(q % 2){
+                final0 = i + (q - 1) / 2;
+            }
+            else
+            {
+                final0 = i + q / 2;
+            }
+
+            for(int a = inicial; a <= final0; a++)
+            {
+                aux = vetor[a];
+                vetor[a] = vetor[b];
+                vetor[b--] = aux;
+            }
+        }
+
+    } while(!ultima);
+}
+
 
 Jogo::Jogo() {
-
-    this->fase = 1;
+    this->estaExecutando = false;
 
     if (!this->sound.openFromFile("bin/Release/files/sounds/menu/pegar.ogg")) {
               std::cerr << "Error loading menu sound" << std::endl;
@@ -16,103 +202,49 @@ Jogo::Jogo() {
     this->painel.setPosition(600, 0);
     this->painel.setTexture(this->backgroundPainel);
 
-    /*********** ITENS MAPA *******************/
-    //itens do mapa
-    if (!this->itens[CONCRETO].loadFromFile("bin/Release/files/images/jogo/concreto.png")
-        || !this->itens[GRAMA].loadFromFile("bin/Release/files/images/jogo/grama.png")
-        || !this->itens[PEDRA].loadFromFile("bin/Release/files/images/jogo/pedra.jpg")
-        || !this->itens[AGUA].loadFromFile("bin/Release/files/images/jogo/agua.png")
-        || !this->itens[PAREDE].loadFromFile("bin/Release/files/images/jogo/parede.png")
-        || !this->itens[OBJ1].loadFromFile("bin/Release/files/images/jogo/obj1.png")
-        || !this->itens[OBJ2].loadFromFile("bin/Release/files/images/jogo/obj2.png")
-        || !this->itens[OBJ3].loadFromFile("bin/Release/files/images/jogo/obj3.png")
-        || !this->itens[OBJ4].loadFromFile("bin/Release/files/images/jogo/obj4.png")
-        || !this->itens[OBJ5].loadFromFile("bin/Release/files/images/jogo/obj5.png")
-        ){
-         std::cerr << "Error loading itens" << std::endl;
+    if(!this->backgroundfundo.loadFromFile("bin/Release/files/images/jogo/quadro.png")){
+         std::cerr << "Error loading painel" << std::endl;
     }
 
-
-    /************* Personagem ***************/
-
-    if (!texture.loadFromFile("bin/Release/files/images/jogo/player2.png")) {
-         std::cerr << "Error loading personagem" << std::endl;
-    }
-
-    //todas as direções possiveis do personagem
-    this->walkingAnimationDown.setSpriteSheet(texture);
-    this->walkingAnimationDown.addFrame(sf::IntRect(32, 0, 32, 32));
-    this->walkingAnimationDown.addFrame(sf::IntRect(64, 0, 32, 32));
-    this->walkingAnimationDown.addFrame(sf::IntRect(32, 0, 32, 32));
-    this->walkingAnimationDown.addFrame(sf::IntRect( 0, 0, 32, 32));
-
-    this->walkingAnimationLeft.setSpriteSheet(texture);
-    this->walkingAnimationLeft.addFrame(sf::IntRect(32, 32, 32, 32));
-    this->walkingAnimationLeft.addFrame(sf::IntRect(64, 32, 32, 32));
-    this->walkingAnimationLeft.addFrame(sf::IntRect(32, 32, 32, 32));
-    this->walkingAnimationLeft.addFrame(sf::IntRect( 0, 32, 32, 32));
-
-    this->walkingAnimationRight.setSpriteSheet(texture);
-    this->walkingAnimationRight.addFrame(sf::IntRect(32, 64, 32, 32));
-    this->walkingAnimationRight.addFrame(sf::IntRect(64, 64, 32, 32));
-    this->walkingAnimationRight.addFrame(sf::IntRect(32, 64, 32, 32));
-    this->walkingAnimationRight.addFrame(sf::IntRect( 0, 64, 32, 32));
-
-    this->walkingAnimationUp.setSpriteSheet(texture);
-    this->walkingAnimationUp.addFrame(sf::IntRect(32, 96, 32, 32));
-    this->walkingAnimationUp.addFrame(sf::IntRect(64, 96, 32, 32));
-    this->walkingAnimationUp.addFrame(sf::IntRect(32, 96, 32, 32));
-    this->walkingAnimationUp.addFrame(sf::IntRect( 0, 96, 32, 32));
-
-    this->animatedSprite = AnimatedSprite(sf::seconds(0.04), true, false);
-
-    this->speed = 1.f;
-    this->movimento = false;
-
-    this->sentido = 2;
-    this->currentAnimation = &walkingAnimationDown;
-    this->animatedSprite.setPosition(POS_INICIAL_X,POS_INICIAL_Y);
-
-    animatedSprite.play(*currentAnimation);
-    animatedSprite.stop();
-
+    this->background.setPosition(0, 0);
+    this->background.setTexture(this->backgroundfundo);
 
     /************* BOTOES ***************/
 
-    if (!this->controle[SEGUIR].loadFromFile("bin/Release/files/images/jogo/seguir.png")
-        ||!this->controle[HORARIO].loadFromFile("bin/Release/files/images/jogo/horario.png")
-        ||!this->controle[ANTIHORARIO].loadFromFile("bin/Release/files/images/jogo/antihorario.png")
-        ||!this->controle[FUNCAO1].loadFromFile("bin/Release/files/images/jogo/f2.png")
-        ||!this->controle[FUNCAO2].loadFromFile("bin/Release/files/images/jogo/g2.png")
-        ||!this->controle[PEGAR].loadFromFile("bin/Release/files/images/jogo/pegar.png")
+    if (!this->controle[CARTA1].loadFromFile("bin/Release/files/images/jogo/copas-as.png")
+        ||!this->controle[CARTA2].loadFromFile("bin/Release/files/images/jogo/copas-02.png")
+        ||!this->controle[CARTA3].loadFromFile("bin/Release/files/images/jogo/espada-06.png")
+        ||!this->controle[CARTA4].loadFromFile("bin/Release/files/images/jogo/ourinhos-07.png")
+        ||!this->controle[CARTA5].loadFromFile("bin/Release/files/images/jogo/paus-08.png")
+        ||!this->controle[CARTA6].loadFromFile("bin/Release/files/images/jogo/copas-dama.png")
         ||!this->controle[LIMPAR].loadFromFile("bin/Release/files/images/jogo/limpar.png")
         ||!this->controle[EXECUTAR].loadFromFile("bin/Release/files/images/jogo/executar.png")
         ){
         std::cout << "Can't find the ITEM" << std::endl;
     }
 
-    this->seguir.setPosition(630, 30);
-    this->seguir.setTexture(controle[SEGUIR]);
+    this->carta1.setPosition(610, 30);
+    this->carta1.setTexture(controle[CARTA1]);
 
-    this->horario.setPosition(675, 30);
-    this->horario.setTexture(controle[HORARIO]);
+    this->carta2.setPosition(670, 30);
+    this->carta2.setTexture(controle[CARTA2]);
 
-    this->antihorario.setPosition(730, 30);
-    this->antihorario.setTexture(controle[ANTIHORARIO]);
+    this->carta3.setPosition(730, 30);
+    this->carta3.setTexture(controle[CARTA3]);
 
-    this->funcao1.setPosition( 630, 80 );
-    this->funcao1.setTexture(controle[FUNCAO1]);
+    this->carta4.setPosition(610, 111 );
+    this->carta4.setTexture(controle[CARTA4]);
 
-    this->funcao2.setPosition( 675, 80 );
-    this->funcao2.setTexture(controle[FUNCAO2]);
+    this->carta5.setPosition(670, 111 );
+    this->carta5.setTexture(controle[CARTA5]);
 
-    this->pegar.setPosition( 730.0f, 80 );
-    this->pegar.setTexture(controle[PEGAR]);
+    this->carta6.setPosition(730, 111 );
+    this->carta6.setTexture(controle[CARTA6]);
 
-    this->limpar.setPosition( 650, 550 );
+    this->limpar.setPosition(650, 550 );
     this->limpar.setTexture(controle[LIMPAR]);
 
-    this->executar.setPosition( 720, 550 );
+    this->executar.setPosition(720, 550 );
     this->executar.setTexture(controle[EXECUTAR]);
 
 }
@@ -121,8 +253,6 @@ int Jogo::Run(sf::RenderWindow &App) {
     //evento do teclado
     int executar = 0;
     sf::Event event;
-
-    this->carregarMapaAtual(App, this->fase);
 
     while (true){
 
@@ -150,15 +280,9 @@ int Jogo::Run(sf::RenderWindow &App) {
 			executar = this->funcionalidadeBotao(App, event);
 
 			//se houver algum erro ou vitória
-			if(executar != GAME){
+			if(executar != LEXICOGRAPHICPERMUTE){
                 return executar;
 			}
-        }
-
-
-        //Acabaram as fases
-        if(this->fase > NUMERO_FASES){
-            return VITORIA;
         }
 
         App.clear();
@@ -173,38 +297,34 @@ int Jogo::Run(sf::RenderWindow &App) {
 
 /****** EXECUCAO *********/
  int Jogo::executarFilaControle(sf::RenderWindow &App){
-     int fase = this->fase;
-     bool sucesso = this->observarJogador(App, true);
 
-     if(!sucesso){
-        //se houver algum erro nos comandos
-        return ERRO;
-     }else{
-
-         //se avançar de fase, mudo o mapa
-         if(fase != this->fase){
-
-                //se houver mais fases
-                if(this->fase <= NUMERO_FASES){
-                    //carrego a próxima
-                    this->carregarMapaAtual(App, this->fase);
-                }else{
-                    //vou para a tela de vitória
-                    return VITORIA;
-                }
-         }
-     }
+    if(this->estaExecutando){
+        this->calcularPermutacoes(App);
+        this->estaExecutando = false;
+    }
 
      //continuo no jogo
-     return GAME;
+     return LEXICOGRAPHICPERMUTE;
  }
 
+
+void Jogo::calcularPermutacoes(sf::RenderWindow &App){
+
+    if(this->estaExecutando){
+        int aux[this->pilha.getTamanho()];
+
+        this->pilha.pilhaParaVetor(aux, this->pilha.getTamanho());
+        this->pilhaPermutacao.esvaziaPilha();
+        JohnsonTrotter(aux,this->pilha.getTamanho());
+        free(aux);
+    }
+
+}
 
 /***** BOTOES *****/
 
 int Jogo::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event){
-    int operacao = GAME;
-    if(!this->movimento)
+    int operacao = LEXICOGRAPHICPERMUTE;
         switch (event.type) {
 
             //se o mouse mover
@@ -213,40 +333,40 @@ int Jogo::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event){
                 sf::Vector2i mousePos = sf::Mouse::getPosition( App );
                 sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
 
-                if (this->seguir.getGlobalBounds().contains( mousePosF ) ) {
-                    this->seguir.setColor( sf::Color( 250, 20, 20 ) );
+                if (this->carta1.getGlobalBounds().contains( mousePosF ) ) {
+                    this->carta1.setColor( sf::Color( 223, 180, 31 ) );
                 } else {
-                    this->seguir.setColor( sf::Color( 255, 255, 255 ) );
+                    this->carta1.setColor( sf::Color( 255, 255, 255 ) );
                 }
 
-                if (this->horario.getGlobalBounds().contains( mousePosF ) ) {
-                    this->horario.setColor( sf::Color( 250, 20, 20 ) );
+                if (this->carta2.getGlobalBounds().contains( mousePosF ) ) {
+                    this->carta2.setColor( sf::Color( 223, 180, 31 ) );
                 } else {
-                    this->horario.setColor( sf::Color( 255, 255, 255 ) );
+                    this->carta2.setColor( sf::Color( 255, 255, 255 ) );
                 }
 
-                if (this->antihorario.getGlobalBounds().contains( mousePosF ) ) {
-                    this->antihorario.setColor( sf::Color( 250, 20, 20 ) );
+                if (this->carta3.getGlobalBounds().contains( mousePosF ) ) {
+                    this->carta3.setColor( sf::Color( 223, 180, 31 ) );
                 } else {
-                    this->antihorario.setColor( sf::Color( 255, 255, 255 ) );
+                    this->carta3.setColor( sf::Color( 255, 255, 255 ) );
                 }
 
-                if (this->funcao1.getGlobalBounds().contains( mousePosF ) ) {
-                    this->funcao1.setColor( sf::Color( 250, 20, 20 ) );
+                if (this->carta4.getGlobalBounds().contains( mousePosF ) ) {
+                    this->carta4.setColor( sf::Color( 223, 180, 31 ) );
                 } else {
-                    this->funcao1.setColor( sf::Color( 255, 255, 255 ) );
+                    this->carta4.setColor( sf::Color( 255, 255, 255 ) );
                 }
 
-                if (this->funcao2.getGlobalBounds().contains( mousePosF ) ) {
-                    this->funcao2.setColor( sf::Color( 250, 20, 20 ) );
+                if (this->carta5.getGlobalBounds().contains( mousePosF ) ) {
+                    this->carta5.setColor( sf::Color( 223, 180, 31 ) );
                 } else {
-                    this->funcao2.setColor( sf::Color( 255, 255, 255 ) );
+                    this->carta5.setColor( sf::Color( 255, 255, 255 ) );
                 }
 
-                if (this->pegar.getGlobalBounds().contains( mousePosF ) ) {
-                    this->pegar.setColor( sf::Color( 250, 20, 20 ) );
+                if (this->carta6.getGlobalBounds().contains( mousePosF ) ) {
+                    this->carta6.setColor( sf::Color( 223, 180, 31 ) );
                 } else {
-                    this->pegar.setColor( sf::Color( 255, 255, 255 ) );
+                    this->carta6.setColor( sf::Color( 255, 255, 255 ) );
                 }
                 break;
             }
@@ -256,138 +376,81 @@ int Jogo::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event){
                 sf::Vector2i mousePos = sf::Mouse::getPosition( App );
                 sf::Vector2f mousePosF( static_cast<float>( mousePos.x ), static_cast<float>( mousePos.y ) );
 
-                if (this->seguir.getGlobalBounds().contains( mousePosF ) ) {
+                if (this->carta1.getGlobalBounds().contains( mousePosF ) ) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
 
-                            //número máximo de comandos
-                        if(this->pilha.getTamanho() < 30)
-                            this->pilha.Insere(SEGUIR);
-                    } else {
-                        if (event.mouseButton.button == sf::Mouse::Middle) {
+                            //número máximo de comandos e se não é repetido
+                        if(this->pilha.getTamanho() < 4 && !this->pilha.ItemRepetido(CARTA1))
+                            this->pilha.Insere(CARTA1);
 
-                            //número máximo de comandos
-                            if(this->pilhafuncao1.getTamanho() < 10)
-                                this->pilhafuncao1.Insere(SEGUIR);
-                        } else{
-                            if (event.mouseButton.button == sf::Mouse::Right) {
-
-                                //número máximo de comandos
-                                if(this->pilhafuncao2.getTamanho() < 10)
-                                    this->pilhafuncao2.Insere(SEGUIR);
-                            }
-                        }
+                        this->pilha.ordernarPilha();
+                        this->pilhaPermutacao.esvaziaPilha();
                     }
                 }
 
-                if (this->horario.getGlobalBounds().contains( mousePosF ) ) {
-                    std::cout << "horario" << std::endl;
+                if (this->carta2.getGlobalBounds().contains( mousePosF ) ) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        //número máximo de comandos
-                        if(this->pilha.getTamanho() < 30)
-                            this->pilha.Insere(HORARIO);
-                    } else {
-
-                        if (event.mouseButton.button == sf::Mouse::Middle) {
-                            //número máximo de comandos
-                            if(this->pilhafuncao1.getTamanho() < 10)
-                                this->pilhafuncao1.Insere(HORARIO);
-                        } else{
-
-                            if (event.mouseButton.button == sf::Mouse::Right) {
-
-                                //número máximo de comandos
-                            if(this->pilhafuncao2.getTamanho() < 10)
-                                this->pilhafuncao2.Insere(HORARIO);
-                            }
-                        }
+                           //número máximo de comandos e se não é repetido
+                        if(this->pilha.getTamanho() < 4 && !this->pilha.ItemRepetido(CARTA2))
+                            this->pilha.Insere(CARTA2);
+                        this->pilha.ordernarPilha();
+                        this->pilhaPermutacao.esvaziaPilha();
                     }
                 }
 
-                if (this->antihorario.getGlobalBounds().contains( mousePosF ) ) {
-                    std::cout << "antihorario" << std::endl;
+                if (this->carta3.getGlobalBounds().contains( mousePosF ) ) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        //número máximo de comandos
-                        if(this->pilha.getTamanho() < 30)
-                            this->pilha.Insere(ANTIHORARIO);
-                    } else {
-
-                        if (event.mouseButton.button == sf::Mouse::Middle) {
-                            if(this->pilhafuncao1.getTamanho() < 10)
-                                this->pilhafuncao1.Insere(ANTIHORARIO);
-                        } else{
-
-                            if (event.mouseButton.button == sf::Mouse::Right) {
-                                if(this->pilha.getTamanho() < 10)
-                                    this->pilhafuncao1.Insere(ANTIHORARIO);
-                            }
-                        }
+                          //número máximo de comandos e se não é repetido
+                        if(this->pilha.getTamanho() < 4 && !this->pilha.ItemRepetido(CARTA3))
+                            this->pilha.Insere(CARTA3);
+                        this->pilha.ordernarPilha();
+                        this->pilhaPermutacao.esvaziaPilha();
                     }
                 }
 
-                if (this->funcao1.getGlobalBounds().contains( mousePosF ) ) {
-                    std::cout << "funcao 1" << std::endl;
+                if (this->carta4.getGlobalBounds().contains( mousePosF ) ) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        //número máximo de comandos
-                        if(this->pilha.getTamanho() < 30)
-                            this->pilha.Insere(FUNCAO1);
+                          //número máximo de comandos e se não é repetido
+                        if(this->pilha.getTamanho() < 4 && !this->pilha.ItemRepetido(CARTA4))
+                            this->pilha.Insere(CARTA4);
+                        this->pilha.ordernarPilha();
+                        this->pilhaPermutacao.esvaziaPilha();
                     }
                 }
 
-                if (this->funcao2.getGlobalBounds().contains( mousePosF ) ) {
-                    std::cout << "funcao 2" << std::endl;
+                if (this->carta5.getGlobalBounds().contains( mousePosF ) ) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        //número máximo de comandos
-                        if(this->pilha.getTamanho() < 30)
-                            this->pilha.Insere(FUNCAO2);
+                           //número máximo de comandos e se não é repetido
+                        if(this->pilha.getTamanho() < 4 && !this->pilha.ItemRepetido(CARTA5))
+                            this->pilha.Insere(CARTA5);
+                        this->pilha.ordernarPilha();
+                        this->pilhaPermutacao.esvaziaPilha();
                     }
                 }
 
-                if (this->pegar.getGlobalBounds().contains( mousePosF ) ) {
-                    std::cout << "pegar 2" << std::endl;
+                if (this->carta6.getGlobalBounds().contains( mousePosF ) ) {
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        //número máximo de comandos
-                        if(this->pilha.getTamanho() < 30)
-                            this->pilha.Insere(PEGAR);
+                           //número máximo de comandos e se não é repetido
+                        if(this->pilha.getTamanho() < 4 && !this->pilha.ItemRepetido(CARTA6))
+                            this->pilha.Insere(CARTA6);
+                        this->pilha.ordernarPilha();
+                        this->pilhaPermutacao.esvaziaPilha();
 
-                    } else {
-
-                        if (event.mouseButton.button == sf::Mouse::Middle) {
-
-                                //número máximo de comandos
-                            if(this->pilhafuncao1.getTamanho() < 10)
-                                this->pilhafuncao1.Insere(PEGAR);
-                            } else{
-
-                                if (event.mouseButton.button == sf::Mouse::Right) {
-                                    if(this->pilhafuncao2.getTamanho() < 10)
-                                        this->pilhafuncao2.Insere(PEGAR);
-                                }
-                        }
                     }
                 }
 
                 if (this->limpar.getGlobalBounds().contains( mousePosF ) ) {
-                    std::cout << "limpar" << std::endl;
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
                         int ultimo;
                         this->pilha.Retira(ultimo);
-                    } else {
-                        if (event.mouseButton.button == sf::Mouse::Middle) {
-                            int ultimo;
-                            this->pilhafuncao1.Retira(ultimo);
-                        } else{
-                            if (event.mouseButton.button == sf::Mouse::Right) {
-                                int ultimo;
-                                this->pilhafuncao2.Retira(ultimo);
-                            }
-                        }
+                        this->pilhaPermutacao.esvaziaPilha();
                     }
                 }
 
@@ -396,7 +459,9 @@ int Jogo::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event){
                     if (event.mouseButton.button == sf::Mouse::Left) {
                          std::cout << "EXECUTAR" << std::endl;
                          //retorno o resultado obtido do comando
-                         operacao = this->executarFilaControle(App);
+
+                         this->estaExecutando = true;
+                         this->executarFilaControle(App);
                     }
                 }
 
@@ -407,21 +472,64 @@ int Jogo::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event){
         return operacao;
 }
 
-void Jogo::desenharOpcoesControle(sf::RenderWindow &App){
+/***** DESENHAR PROGRAMA *****/
 
-    if(!this->movimento){
-        //desenho os botões
-        App.draw(seguir);
-        App.draw(horario);
-        App.draw(antihorario);
-        App.draw(funcao1);
-        App.draw(funcao2);
-        App.draw(pegar);
+void Jogo::desenharPermutacoes(sf::RenderWindow &App){
 
-        App.draw(limpar);
-        App.draw(executar);
+    if(this->pilhaPermutacao.getTamanho() > 0){
+        //numero de itens da pilha de permutação
+        int tamanho = this->pilhaPermutacao.getTamanho();
+        int nroElementosPermutados = pilha.getTamanho();
+
+        //transformo em vetor
+        int listaPermutacao[tamanho];
+        this->pilhaPermutacao.pilhaParaVetor(listaPermutacao, tamanho);
+
+        int x = 0;
+        int y = 0;
+        int coluna = 0;
+
+        cout << " inicio " << endl;
+        for (int i = 1; i <= tamanho; i++) {
+            cout << listaPermutacao[i] << " ";
+
+            objeto.setTexture(this->controle[listaPermutacao[i-1]]);
+            objeto.setPosition(28+ 6*x + coluna*78, 33 + x*16 + y*135);
+
+            if((i % nroElementosPermutados) == 0){
+                cout << " nova coluna " << endl;
+                coluna++;
+                x = 0;
+            }else{
+                x++;
+            }
+
+            //se passou o numero maximo de colunas
+            if(coluna > 6){
+                y++;
+                x = 0;
+                coluna = 0;
+            }
+
+            App.draw(this->objeto);
+        }
+        free(listaPermutacao);
     }
 
+}
+
+/***** Desenho todas as cartas e opções do menu *****/
+void Jogo::desenharOpcoesControle(sf::RenderWindow &App){
+
+        //desenho os botões e cartas
+        App.draw(this->carta1);
+        App.draw(this->carta2);
+        App.draw(this->carta3);
+        App.draw(this->carta4);
+        App.draw(this->carta5);
+        App.draw(this->carta6);
+        App.draw(this->limpar);
+        App.draw(this->executar);
 
 }
 
@@ -445,11 +553,11 @@ void Jogo::desenharFilaControle(sf::RenderWindow &App){
 		pilha.Insere(aux);
 
 		objeto.setTexture(this->controle[aux]);
-		objeto.setPosition(625 + numeroElemento * 30 , 150 + numeroElementoY * 32);
+		objeto.setPosition(610 + numeroElemento * 55 + 6*numeroElementoY , 350 + numeroElementoY * 20);
 
 		numeroElemento++;
 
-		if(numeroElemento == 5){
+		if(numeroElemento == 3){
             numeroElementoY++;
             numeroElemento = 0;
 		}
@@ -459,128 +567,13 @@ void Jogo::desenharFilaControle(sf::RenderWindow &App){
     }
 }
 
-void Jogo::desenharFilaControleF1(sf::RenderWindow &App){
-    /* pilha auxiliar para desenhar os objetos */
-	Pilha<int> paux;
-	int aux;
-
-	while (!this->pilhafuncao1.EstaVazia()) {
-		this->pilhafuncao1.Retira(aux);
-		paux.Insere(aux);
-	}
-
-	int numeroElemento = 0;
-	int numeroElementoY = 0;
-	/* agora que paux possui pilha invertida, reinserimos os valores em pilha na ordem correta e aproveitamos para desenhar o objeto! */
-	while (!paux.EstaVazia()) {
-		paux.Retira(aux);
-
-		/* inserimos o elemento de volta na stack */
-		pilhafuncao1.Insere(aux);
-
-		objeto.setTexture(this->controle[aux]);
-		objeto.setPosition(625 + numeroElemento * 30 , 380 + numeroElementoY * 30);
-
-		numeroElemento++;
-
-		if(numeroElemento == 5){
-            numeroElementoY++;
-            numeroElemento = 0;
-		}
-
-        /* desenha o objeto */
-        App.draw(this->objeto);
-    }
-}
-
-void Jogo::desenharFilaControleF2(sf::RenderWindow &App){
-    /* pilha auxiliar para desenhar os objetos */
-	Pilha<int> paux;
-	int aux;
-
-	while (!this->pilhafuncao2.EstaVazia()) {
-		this->pilhafuncao2.Retira(aux);
-		paux.Insere(aux);
-	}
-
-	int numeroElemento = 0;
-	int numeroElementoY = 0;
-	/* agora que paux possui pilha invertida, reinserimos os valores em pilha na ordem correta e aproveitamos para desenhar o objeto! */
-	while (!paux.EstaVazia()) {
-		paux.Retira(aux);
-
-		/* inserimos o elemento de volta na stack */
-		pilhafuncao2.Insere(aux);
-
-		objeto.setTexture(this->controle[aux]);
-		objeto.setPosition(625 + numeroElemento * 30 , 470 + numeroElementoY * 30);
-
-		numeroElemento++;
-
-		if(numeroElemento == 5){
-            numeroElementoY++;
-            numeroElemento = 0;
-		}
-
-        /* desenha o objeto */
-        App.draw(this->objeto);
-    }
-}
-
-/******** PERSONAGEM *********/
-
-void Jogo::resetarJogador(sf::RenderWindow &App){
-    this->animatedSprite.setPosition(POS_INICIAL_X,POS_INICIAL_Y);
-    this->sentido = 2;
-    this->currentAnimation = &walkingAnimationDown;
-
-    animatedSprite.play(*currentAnimation);
-    animatedSprite.stop();
-    App.draw(animatedSprite);
-    Sleep(200);
-}
-
-bool Jogo::observarJogador(sf::RenderWindow &App, bool executarMovimentos){
-    bool sucesso = true;
-
-    //se o personagem já não estiver se movimentando, através do método movimentarPersonagem
-    if(!this->movimento){
-
-         //se a função for chamada pra mostrar o jogador se movimentando
-         if(executarMovimentos){
-             //carrego a fase atual
-            this->carregarMapaAtual(App, this->fase);
-            this->resetarJogador(App);
-            this->movimento = true;
-
-            if(this->movimentarPersonagem(App, this->pilha)){
-
-                //se o usuario tiver pegado todos os itens do mapa
-                if(this->numeroItensMapa() == 0){
-                    cout << this->numeroItensMapa()<< endl;
-                    this->fase++;
-                    this->resetarJogador(App);
-                }
-                else{
-                    sucesso = false;
-                }
-            }
-            else{
-                sucesso = false;
-            }
-
-            this->movimento = false;
-
-        } else{
-            //se a funcao for chamada pra mostrar o jogador no mapa, apenas
-            animatedSprite.play(*currentAnimation);
-
-            animatedSprite.stop();
-            App.draw(animatedSprite);
-        }
-    }
-
-    return sucesso;
+/***** Método responsável por chamar funções que desenham o programa *****/
+void Jogo::desenharJogo(sf::RenderWindow &App){
+    App.draw(this->painel);
+    App.draw(this->background);
+    this->desenharOpcoesControle(App);
+    this->desenharFilaControle(App);
+    this->desenharPermutacoes(App);
 }
 
 bool Jogo::movimentarPersonagem(sf::RenderWindow &App, Pilha<int> &pilha){
@@ -607,167 +600,6 @@ bool Jogo::movimentarPersonagem(sf::RenderWindow &App, Pilha<int> &pilha){
         if(ok){
             noKeyWasPressed = false;
             sf::Vector2f movement(0.f, 0.f);
-
-            switch(aux2){
-                case SEGUIR:
-
-                        cout << "Comando: seguir" <<endl;
-                        noKeyWasPressed = true; //mudar o local da variavel
-
-                        switch(this->sentido){
-
-                            //pra cima
-                            case 0:
-                                x = this->descobrirX(this->animatedSprite.getPosition().x);
-                                cout << "Posicao X: " << this->animatedSprite.getPosition().x << ", " << x << endl;
-
-                                y = this->descobrirY(this->animatedSprite.getPosition().y - TAMANHO_ITEM);
-                                cout << "Posicao Y: "<<this->animatedSprite.getPosition().y - TAMANHO_ITEM << ", " << y <<endl;
-
-                                if(!podeSeguir(x,y)){
-                                    cout << "NAO PODE PROSSEGUIR" << endl;
-                                    ok = false;
-                                    continue;
-                                }
-                                movement.y -= speed;
-                                break;
-
-                            //esquerda
-                            case 1:
-                                x = this->descobrirX(this->animatedSprite.getPosition().x - TAMANHO_ITEM);
-                                cout << "Posicao X: " << this->animatedSprite.getPosition().x - TAMANHO_ITEM << ", " << x << endl;
-
-                                y = this->descobrirY(this->animatedSprite.getPosition().y );
-                                cout << "Posicao Y: "<<this->animatedSprite.getPosition().y << ", " << y <<endl;
-
-                                if(!podeSeguir(x,y)){
-                                    cout << "NAO PODE PROSSEGUIR" << endl;
-                                    ok = false;
-                                    continue;
-                                }
-                                movement.x -= speed;
-                                break;
-
-                            //pra baixo
-                            case 2:
-                                x = this->descobrirX(this->animatedSprite.getPosition().x);
-                                cout << "Posicao X: " << this->animatedSprite.getPosition().x << ", " << x << endl;
-
-                                y = this->descobrirY(this->animatedSprite.getPosition().y + TAMANHO_ITEM);
-                                cout << "Posicao Y: "<<this->animatedSprite.getPosition().y + TAMANHO_ITEM << ", " << y <<endl;
-
-                                if(!podeSeguir(x,y)){
-                                    ok = false;
-                                    cout << "NAO PODE PROSSEGUIR" << endl;
-                                    continue;
-                                }
-                                movement.y += speed;
-                                break;
-
-                            //pra direita
-                            case 3:
-
-                                x = this->descobrirX(this->animatedSprite.getPosition().x + TAMANHO_ITEM);
-                                cout << "Posicao X: " << this->animatedSprite.getPosition().x + TAMANHO_ITEM << ", " << x << endl;
-
-                                y = this->descobrirY(this->animatedSprite.getPosition().y );
-                                cout << "Posicao Y: "<<this->animatedSprite.getPosition().y << ", " << y <<endl;
-
-                                if(!podeSeguir(x,y)){
-                                    cout << "NAO PODE PROSSEGUIR" << endl;
-                                    ok = false;
-                                    continue;
-                                }
-                                movement.x += speed;
-                                break;
-                        }
-                    break;
-
-                case HORARIO:
-                    cout << "Comando: horario" <<endl;
-
-                    if(this->sentido > 0){
-                        this->sentido--;
-                    } else{
-                        this->sentido = 3;
-                    }
-
-                    switch(this->sentido){
-                        //pra cima
-                        case 0:
-                            currentAnimation = &walkingAnimationUp;
-                            break;
-                        //esquerda
-                        case 1:
-                            currentAnimation = &walkingAnimationLeft;
-                            break;
-                        //pra baixo
-                        case 2:
-                            currentAnimation = &walkingAnimationDown;
-                            break;
-                        //pra direita
-                        case 3:
-                            currentAnimation = &walkingAnimationRight;
-                            break;
-                    }
-                    break;
-
-                case ANTIHORARIO:
-
-                    if(this->sentido < 3){
-                        this->sentido++;
-                    } else{
-                        this->sentido = 0;
-                    }
-
-                    switch(sentido){
-                        //pra cima
-                        case 0:
-                            currentAnimation = &walkingAnimationUp;
-                            break;
-                        //esquerda
-                        case 1:
-                            currentAnimation = &walkingAnimationLeft;
-                            break;
-                        //pra baixo
-                        case 2:
-                            currentAnimation = &walkingAnimationDown;
-                            break;
-                        //pra direita
-                        case 3:
-                            currentAnimation = &walkingAnimationRight;
-                            break;
-                    }
-                    break;
-
-                case FUNCAO1:
-                    cout << "Comando: f1" <<endl;
-
-                    if(!this->movimentarPersonagem(App, this->pilhafuncao1)){
-                        ok = false;
-                        continue;
-                    }
-                    break;
-
-                case FUNCAO2:
-                    cout << "Comando: f2" <<endl;
-
-                    if(!this->movimentarPersonagem(App, this->pilhafuncao2)){
-                        ok = false;
-                        continue;
-                    }
-                    break;
-
-                case PEGAR:
-                    cout << "Comando: pegar" <<endl;
-                    x = this->descobrirX(this->animatedSprite.getPosition().x);
-                    cout << "Posicao X: " << this->animatedSprite.getPosition().x << ", " << x << endl;
-                    y = this->descobrirY(this->animatedSprite.getPosition().y);
-                    cout << "Posicao Y: "<<this->animatedSprite.getPosition().y << ", " << y <<endl;
-                    this->pegarItem(x,y);
-                    break;
-
-            }
 
             // if no key was pressed stop the animation
             if (!noKeyWasPressed) {
@@ -798,13 +630,6 @@ bool Jogo::movimentarPersonagem(sf::RenderWindow &App, Pilha<int> &pilha){
                     this->animatedSprite.move(movement);
                     this->animatedSprite.update(sf::seconds(0.4f));
 
-                    //o jogador fez algum movimento que causou a morte dele
-                    if(this->morre(this->descobrirX(this->animatedSprite.getPosition().x),
-                                               this->descobrirY(this->animatedSprite.getPosition().y))){
-                        cout << "MORRE" << endl;
-                        ok = false;
-                    }
-
                     // draw
                     App.clear();
                     this->desenharJogo(App);
@@ -820,161 +645,20 @@ bool Jogo::movimentarPersonagem(sf::RenderWindow &App, Pilha<int> &pilha){
     return ok;
 }
 
-void Jogo::desenharJogo(sf::RenderWindow &App){
-    App.draw(this->painel);
-    this->desenharMapaAtual(App);
-    this->desenharOpcoesControle(App);
-    this->desenharFilaControle(App);
-    this->desenharFilaControleF1(App);
-    this->desenharFilaControleF2(App);
-    this->observarJogador(App, false);
-}
-
-/************ VERIFICA ITENS ********/
-int Jogo::descobrirX(const float x) const{
-    return (x / TAMANHO_ITEM);
-}
-
-int Jogo::descobrirY(const float y) const{
-    return (y / TAMANHO_ITEM);
-}
-
-bool Jogo::podeSeguir(const int x, const int y) const {
-
-    return (estaNoIntervaloDoMapa(x,y)
-            && this->mapaAtual[y][x] != PEDRA);
-}
-
-bool Jogo::morre(const int x, const int y) const{
-    return this->mapaAtual[y][x] == AGUA;
-}
-
-bool Jogo::ehItemMapa(const int x, const int y) const {
-
-    if(estaNoIntervaloDoMapa(x, y))
-        return  ((this->mapaAtual[y][x] == OBJ1) ||(this->mapaAtual[y][x] == OBJ2)
-                 ||(this->mapaAtual[y][x] == OBJ3) ||(this->mapaAtual[y][x] == OBJ4)
-                 || (this->mapaAtual[y][x] == OBJ5));
-
-    return false;
-}
-
-bool Jogo::estaNoIntervaloDoMapa(const int x, const int y) const {
-    return ((x > -1 && x < NRO_CASAS) && ((y > -1 && y < NRO_CASAS)));
-}
-
-int Jogo::numeroItensMapa() const{
-    int nroItens = 0;
-
-    //percorro as colunas
-    for(int i = 0; i <NRO_CASAS; i++){
-
-        //percorro as linhas
-        for(int j = 0; j <NRO_CASAS; j++){
-
-            //SE FOR ITEM
-            if(this->ehItemMapa(j,i))
-                nroItens++;
-        }
-    }
-    return nroItens;
-}
-
-bool Jogo::pegarItem(const int x, const int y){
-
-    if(estaNoIntervaloDoMapa(x,y)){
-
-        if(this->ehItemMapa(x,y)){
-            this->sound.play();
-            this->mapaAtual[y][x] = PAREDE;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/************ MAPA ******************/
-
-void Jogo::desenharMapaAtual(sf::RenderWindow &App){
-
-    //percorro as colunas
-    for(int i = 0; i <NRO_CASAS; i++){
-
-        //percorro as linhas
-        for(int j = 0; j <NRO_CASAS; j++){
-            //percorro cada posicao da matriz
-
-            mapa.setTexture(this->itens[this->mapaAtual[i][j]]);
-            mapa.setPosition(j*TAMANHO_ITEM, i*TAMANHO_ITEM);
-            //desenha o item no mapa
-            App.draw(mapa);
-        }
-    }
-}
-
-void Jogo::carregarMapaAtual(sf::RenderWindow &App, int fase){
-    string linha, nomeArquivo;
-    ifstream arquivo;
-    int x , y, tamanhoString;
-
-    //limpo a matriz
-    for(int y = 0;y <NRO_CASAS; y++){
-
-        for(int x = 0; x <NRO_CASAS; x++){
-            this->mapaAtual[y][x] = -1;
-        }
-
-        cout <<endl;
-    }
-
-    //escolho o arquivo da fase atual
-    switch(fase){
-        case 1:
-            arquivo.open("bin/Release/files/fases/mapa1.txt");
-        break;
-        case 2:
-            arquivo.open("bin/Release/files/fases/mapa2.txt");
-            break;
-        case 3:
-            arquivo.open("bin/Release/files/fases/mapa3.txt");
-            break;
-        case 4:
-            arquivo.open("bin/Release/files/fases/mapa4.txt");
-            break;
-        case 5:
-            arquivo.open("bin/Release/files/fases/mapa5.txt");
-            break;
-        default:
-            //arquivo default
-            arquivo.open("bin/Release/files/fases/mapa0.txt");
-            break;
-    }
-
-    //se o arquivo estiver aberto
-    if(arquivo.is_open()){
-
-        y = 0;
-        //enquanto houver linha no arquivo e não for maior que o tamanho máximo
-        while((getline(arquivo, linha)) && (y < NRO_CASAS)){
-
-            //tamanho da linha atual
-            tamanhoString = linha.length();
-
-            for(x = 0; (x < NRO_CASAS) && (x < tamanhoString); x++){
-
-                //obtenho o char do valor e transformo no int
-                this->mapaAtual[y][x] = linha[x]-48;
-            }
-
-            //incremento as linhas
-            y++;
-        }
-    }
-}
-
 
 /****** OUTROS ********/
+
+int fatorial(int numero) {//O calculo do fatorial e feito aqui
+
+   int aux;
+   aux = numero;
+   while(numero > 1)
+   {
+      aux = aux * (numero-1);
+      numero--;
+   }
+   return (aux);
+}
 
 template <typename T>
 std::string to_string(T value) {

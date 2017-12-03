@@ -32,8 +32,7 @@ class Menu: public Telas {
 
         //sprite com todas as imagens
         sf::Texture fundoJogo;
-        Animation fundoJogoMovimento;
-        AnimatedSprite background;
+        sf::Sprite background;
         sf::Clock frameClock;
 
         sf::Font font;

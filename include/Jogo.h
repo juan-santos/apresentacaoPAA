@@ -46,14 +46,22 @@
 #define POS_INICIAL_X 30
 #define POS_INICIAL_Y 30
 
-#define SEGUIR 0
-#define HORARIO 1
-#define ANTIHORARIO 2
-#define FUNCAO1 3
-#define FUNCAO2 4
-#define PEGAR 5
-#define LIMPAR 6
-#define EXECUTAR 7
+#define LIMPAR 1
+#define EXECUTAR 0
+
+#define CARTA1 2
+#define CARTA2 3
+#define CARTA3 4
+#define CARTA4 5
+#define CARTA5 6
+#define CARTA6 7
+
+#define ESQUERDA 0
+#define DIREITA 1
+
+typedef struct{
+    int valor, seta, movel;
+} elemento_jt;
 
 /*
  *	Classes
@@ -64,18 +72,16 @@ class Jogo : public Telas {
     private:
 
         Pilha<int> pilha;
-        Pilha<int> pilhafuncao1;
-        Pilha<int> pilhafuncao2;
         sf::Sprite objeto;
 
         //botão
         sf::Texture controle[8];
-        sf::Sprite seguir;
-        sf::Sprite horario;
-        sf::Sprite antihorario;
-        sf::Sprite funcao1;
-        sf::Sprite funcao2;
-        sf::Sprite pegar;
+        sf::Sprite carta1;
+        sf::Sprite carta2;
+        sf::Sprite carta3;
+        sf::Sprite carta4;
+        sf::Sprite carta5;
+        sf::Sprite carta6;
         sf::Sprite limpar;
         sf::Sprite executar;
 
@@ -85,7 +91,9 @@ class Jogo : public Telas {
 
         //painel
         sf::Texture backgroundPainel;
+        sf::Texture backgroundfundo;
         sf::Sprite painel;
+        sf::Sprite background;
 
         sf::Texture texture;
         Animation walkingAnimationDown;
@@ -97,13 +105,10 @@ class Jogo : public Telas {
         sf::Clock frameClock;
         AnimatedSprite animatedSprite;
 
+        bool estaExecutando;
+
         float speed;
         bool noKeyWasPressed;
-
-        int mapaAtual[NRO_CASAS][NRO_CASAS];
-        int fase;
-        int sentido;
-        bool movimento;
 
         //método que redesenha o jogo durante o loop
         void desenharJogo(sf::RenderWindow &App);
@@ -113,7 +118,7 @@ class Jogo : public Telas {
         //carrega a matriz da fase atual
         void carregarMapaAtual(sf::RenderWindow &App, int fase);
         //desenha a fase atual
-        void desenharMapaAtual(sf::RenderWindow &App);
+        void desenharFundoPlano(sf::RenderWindow &App);
 
         //desenha todas as opções de controle
         int funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event);
@@ -123,6 +128,11 @@ class Jogo : public Telas {
         void desenharFilaControle(sf::RenderWindow &App);
         void desenharFilaControleF1(sf::RenderWindow &App);
         void desenharFilaControleF2(sf::RenderWindow &App);
+
+        Pilha<int> pilhaPermutacao;
+        void JohnsonTrotter(int vetor[], int quantidade_elementos);
+        void calcularPermutacoes(sf::RenderWindow &App);
+        void desenharPermutacoes(sf::RenderWindow &App);
 
         int descobrirX(const float x) const;
         int descobrirY(const float y) const;

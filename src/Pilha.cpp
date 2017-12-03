@@ -1,8 +1,47 @@
 #include "Pilha.h"
 
 template <class T>
+void Pilha<T>::trocar(T &num1, T &num2){
+   int num3 = num1;
+   num1 = num2;
+   num2 = num3;
+}
+
+template <class T>
+void Pilha<T>::selectionSort(int *vetor, int tamanho){
+   int k;
+   for( int i = 0; i < tamanho; i++ ){
+	  k =i;
+	  for( int j = tamanho - 1; j > i; j-- ){
+		 if(vetor[j] < vetor[k])
+			k = j;
+	  }
+	  trocar( vetor[i], vetor[k] );
+   }
+}
+
+template <class T>
+void Pilha<T>::ordernarPilha() {
+    selectionSort(this->PilhaPtr, this->Topo+1);
+}
+
+template <class T>
 Pilha<T>::Pilha()
 {
+    PilhaPtr = NULL;
+    Topo = -1;
+}
+template <class T>
+void Pilha<T>::pilhaParaVetor(T novoVetor[], const int tamanho) const{
+    for(int i = 0; i < tamanho; i++){
+        novoVetor[i] = this->PilhaPtr[i];
+    }
+}
+
+template <class T>
+void Pilha<T>::esvaziaPilha() {
+
+    delete[] PilhaPtr;
     PilhaPtr = NULL;
     Topo = -1;
 }
@@ -12,6 +51,21 @@ Pilha<T>::~Pilha()
 {
     if(PilhaPtr != NULL)
         delete [] PilhaPtr;
+}
+
+template <class T>
+bool Pilha<T>::ItemRepetido(const T &elemento) const{
+    if(!this->EstaVazia()){
+
+        //percorro todos os elementos
+        for(int i = 0; i <= this->Topo; i++){
+            //se for igual
+            if(this->PilhaPtr[i] == elemento)
+                return true;
+        }
+    }
+
+    return false;
 }
 
 template <class T>

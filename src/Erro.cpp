@@ -48,7 +48,7 @@ int Erro::Run(sf::RenderWindow &App) {
 				switch (Event.key.code) {
 
                     case sf::Keyboard::Return:
-                        return GAME;
+                        return LEXICOGRAPHICPERMUTE;
 
                     default:
                         break;

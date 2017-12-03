@@ -11,7 +11,7 @@ int Instrucao::Run(sf::RenderWindow &App) {
 
 	bool Running = true;
 
-	if (!Texture.loadFromFile("bin/Release/files/images/menu/instrucao.jpg")){
+	if (!Texture.loadFromFile("bin/Release/files/images/menu/instrucao.png")){
 		std::cerr << "Error loading menu.png" << std::endl;
 	}
 

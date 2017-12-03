@@ -6,9 +6,10 @@
 #define SAIR -1
 #define INSTRUCAO 0
 #define MENU 1
-#define GAME 2
+#define LEXICOGRAPHICPERMUTE 2
 #define VITORIA 3
 #define ERRO 4
+
 
 //classe pai que conterá todas as telas
 class Telas {

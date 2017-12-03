@@ -1,20 +1,4 @@
 /*
- *
- * Cacaumming é um jogo desenvolvido pelos alunos da UFSCAR com o propósito de
- * estudar o funcionamento da estrutura de lista cadastral.
- *
- * O objetivo do jogo é ensinar lógica de programação para o jogador de uma forma interativa
- * para isso o jogador deve guiar a cacau até o osso coletando os itens dispostos pelo cenário.
- *
- * @authors:
- *  + Amanda Basso RA: 727331
- *  + Bárbara Olivieri RA: 727334
- *  + Juan Santos RA: 594946
- *  + Matheus Vrech RA: 727349
- *
-
-
-/*
 *	Libraries
 ***********************************************************************/
 #include <iostream>
@@ -27,6 +11,8 @@
 #include "Instrucao.h"
 #include "Vitoria.h"
 #include "Erro.h"
+#include "JohnsonTrotter.h"
+#include "LexicographicPermute.h"
 
 #include "Lista.h"
 #include "Node.h"
@@ -76,6 +62,14 @@ int main(int argc, char** argv) {
 	//opcao 5
 	Erro e;
 	listaTelas.push_back(&e);
+
+	//opção Lexicographic Permute
+	LexicographicPermute f;
+	listaTelas.push_back(&f);
+
+	//opção Johnson Trotter
+	JohnsonTrotter g;
+	listaTelas.push_back(&g);
 
 	//Main loop
 	while (telaAtual >= 0){

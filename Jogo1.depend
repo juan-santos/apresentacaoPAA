@@ -1243,10 +1243,10 @@
 1493668011 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\cscreen.cpp
 	"cScreen.h"
 
-1500242356 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\cscreen.h
+1512319648 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\cscreen.h
 	<SFML/Graphics.hpp>
 
-1500242255 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\erro.cpp
+1512319657 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\erro.cpp
 	"Erro.h"
 
 1500230423 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\erro.h
@@ -1256,7 +1256,7 @@
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
-1500242233 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\instrucao.cpp
+1512353037 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\instrucao.cpp
 	"Instrucao.h"
 
 1500240582 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\instrucao.h
@@ -1265,10 +1265,10 @@
 	<string>
 	<SFML/Graphics.hpp>
 
-1500246326 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\jogo.cpp
+1512389437 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\jogo.cpp
 	"Jogo.h"
 
-1500245851 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\jogo.h
+1512382401 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\jogo.h
 	<iostream>
 	"cScreen.h"
 	<string>
@@ -1281,10 +1281,10 @@
 	"AnimatedSprite.h"
 	"../src/Pilha.cpp"
 
-1495105148 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\pilha.cpp
+1512389215 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\pilha.cpp
 	"Pilha.h"
 
-1495105086 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\pilha.h
+1512389257 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\pilha.h
 	<iostream>
 
 1499939539 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\lista.cpp
@@ -1297,10 +1297,10 @@
 1499936630 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\node.h
 	<iostream>
 
-1500212169 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\menu.cpp
+1512389554 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\menu.cpp
 	"Menu.h"
 
-1499940859 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\menu.h
+1512351866 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\menu.h
 	<iostream>
 	<string>
 	"cScreen.h"
@@ -1312,7 +1312,7 @@
 1499936662 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\node.cpp
 	"Node.h"
 
-1495105148 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\pilha.cpp
+1512389215 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\pilha.cpp
 	"Pilha.h"
 
 1500242244 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\vitoria.cpp
@@ -1325,7 +1325,7 @@
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
-1512046237 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\main.cpp
+1512048751 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<ctime>
@@ -1335,6 +1335,26 @@
 	"Instrucao.h"
 	"Vitoria.h"
 	"Erro.h"
+	"JohnsonTrotter.h"
+	"LexicographicPermute.h"
 	"Lista.h"
 	"Node.h"
+
+1512048487 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\johnsontrotter.h
+	<iostream>
+	"cScreen.h"
+	<string>
+	<SFML/Graphics.hpp>
+
+1512048613 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\lexicographicpermute.h
+	<iostream>
+	"cScreen.h"
+	<string>
+	<SFML/Graphics.hpp>
+
+1512048423 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\johnsontrotter.cpp
+	"JohnsonTrotter.h"
+
+1512048552 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\lexicographicpermute.cpp
+	"LexicographicPermute.h"
 

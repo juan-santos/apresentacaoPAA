@@ -13,29 +13,19 @@ Menu::Menu() {
         std::cerr << "Error loading menu image" << std::endl;
     }
 
-    //********** início movimento no fundo **********
-
-    this->fundoJogoMovimento.setSpriteSheet(this->fundoJogo);
-    this->fundoJogoMovimento.addFrame(sf::IntRect(0, 0, 800, 600));
-    this->fundoJogoMovimento.addFrame(sf::IntRect(800, 0, 800, 600));
-    this->fundoJogoMovimento.addFrame(sf::IntRect(0, 600, 800, 600));
-    this->fundoJogoMovimento.addFrame(sf::IntRect(800, 600, 800, 600));
-
-    this->background.setPosition(0,0);
+    background.setTexture(fundoJogo);
     //********** fim movimento fundo **********
 
     /* Load Menu font text */
-    if (!this->font.loadFromFile("bin/Release/files/fonts/menu/crackman_front.ttf")) {
+    if (!this->font.loadFromFile("bin/Release/files/fonts/menu/bradley-hand-itc.ttf")) {
         std::cerr << "Error loading menu font text" << std::endl;
     }
 
     //textos do menu
     this->play.setFont(this->font);
-    this->play.setString("Start");
-    this->back.setFont(this->font);
-    this->back.setString("Continue");
+    this->play.setString("Johnson Trotter");
     this->instrucoes.setFont(this->font);
-    this->instrucoes.setString("Instructions");
+    this->instrucoes.setString("Lexicographic Permute");
     this->quit.setFont(this->font);
     this->quit.setString("Exit");
 }
@@ -52,14 +42,6 @@ int Menu::Run(sf::RenderWindow &App) {
     this->sound.play(); /* play music */
 
 	while (true) {
-
-        //****** início do movimento *******
-        sf::Time frameTime = this->frameClock.restart();
-        this->background.play(this->fundoJogoMovimento);
-
-        // muda a imagem
-        this->background.update(frameTime);
-        //****** fim do movimento ******
 
 		/* Parse Events */
 		while (App.pollEvent(event)) {
@@ -98,7 +80,7 @@ int Menu::Run(sf::RenderWindow &App) {
 							case 0:
 							    //jogo
                                 this->playing = true;
-                                return GAME;
+                                return LEXICOGRAPHICPERMUTE;
 							case 1:
 							    //tela de instruções
 								return INSTRUCAO;
@@ -120,57 +102,45 @@ int Menu::Run(sf::RenderWindow &App) {
 		switch(opt) {
 			case 0:
 
-                this->play.setColor(sf::Color(253, 206, 220, 255));
-                this->play.setCharacterSize(110);
-                this->play.setPosition({240.f, 150.f});
+                this->play.setColor(sf::Color(255, 0, 0, 255));
+                this->play.setCharacterSize(70);
+                this->play.setPosition({180.f, 250.f});
 
-                this->back.setColor(sf::Color(253, 206, 220, 255));
-                this->back.setCharacterSize(110);
-                this->back.setPosition(100,150);
+                this->instrucoes.setColor(sf::Color(0, 0, 0, 255));
+                this->instrucoes.setCharacterSize(50);
+                this->instrucoes.setPosition({150.f, 350});
 
-                this->instrucoes.setColor(sf::Color(162, 132, 140, 255));
-                this->instrucoes.setCharacterSize(60);
-                this->instrucoes.setPosition({170.f, 300.f});
-
-                this->quit.setColor(sf::Color(162, 132, 140, 255));
-                this->quit.setCharacterSize(60);
-                this->quit.setPosition({335.f, 400.f});
+                this->quit.setColor(sf::Color(0, 0, 0, 255));
+                this->quit.setCharacterSize(50);
+                this->quit.setPosition({370.f, 450});
 
 			break;
 
 			case 1:
-                this->play.setColor(sf::Color(162, 132, 140, 255));
-                this->play.setCharacterSize(60);
-                this->play.setPosition({315.f, 200.f});
+                this->play.setColor(sf::Color(0, 0, 0, 255));
+                this->play.setCharacterSize(50);
+                this->play.setPosition({250, 250});
 
-                this->back.setColor(sf::Color(162, 132, 140, 255));
-                this->back.setCharacterSize(60);
-                this->back.setPosition({240.f, 200.f});
+                this->instrucoes.setColor(sf::Color(255, 0, 0, 255));
+                this->instrucoes.setCharacterSize(60);
+                this->instrucoes.setPosition({120, 310});
 
-                this->instrucoes.setColor(sf::Color(253, 206, 220, 255));
-                this->instrucoes.setCharacterSize(85);
-                this->instrucoes.setPosition({90.f, 280.f});
-
-                this->quit.setColor(sf::Color(162, 132, 140, 255));
-                this->quit.setCharacterSize(60);
-                this->quit.setPosition({335.f, 400.f});
+                this->quit.setColor(sf::Color(0, 0, 0, 255));
+                this->quit.setCharacterSize(50);
+                this->quit.setPosition({370, 410});
 			break;
 			case 2:
-				this->play.setColor(sf::Color(162, 132, 140, 255));
-				this->play.setCharacterSize(60);
-				this->play.setPosition({315.f, 200.f});
+                this->play.setColor(sf::Color(0, 0, 0, 255));
+                this->play.setCharacterSize(50);
+                this->play.setPosition({250, 250});
 
-				this->back.setColor(sf::Color(162, 132, 140, 255));
-				this->back.setCharacterSize(60);
-				this->back.setPosition({240.f, 200.f});
+				this->instrucoes.setColor(sf::Color(0, 0, 0, 255));
+				this->instrucoes.setCharacterSize(50);
+				this->instrucoes.setPosition({150, 350});
 
-				this->instrucoes.setColor(sf::Color(162, 132, 140, 255));
-				this->instrucoes.setCharacterSize(60);
-				this->instrucoes.setPosition({170.f, 300.f});
-
-				this->quit.setColor(sf::Color(253, 206, 220, 255));
-				this->quit.setCharacterSize(85);
-				this->quit.setPosition({285.f, 380.f});
+				this->quit.setColor(sf::Color(255, 0, 0, 255));
+				this->quit.setCharacterSize(70);
+				this->quit.setPosition({360, 410});
 			break;
 			default:
 			break;
@@ -181,14 +151,7 @@ int Menu::Run(sf::RenderWindow &App) {
 
 		/* Draw screen */
 		App.draw(this->background);
-
-		/* Display menu options */
-		if (this->playing) {
-			App.draw(this->back);
-		} else {
-			App.draw(this->play);
-		}
-
+        App.draw(this->play);
 		App.draw(this->instrucoes);
 		App.draw(this->quit);
 
