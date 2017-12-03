@@ -522,17 +522,6 @@ void JohnsonTrotter::desenharJogo(sf::RenderWindow &App){
 
 /****** OUTROS ********/
 
-int fatorial(int numero) {//O calculo do fatorial e feito aqui
-
-   int aux;
-   aux = numero;
-   while(numero > 1) {
-      aux = aux * (numero-1);
-      numero--;
-   }
-   return (aux);
-}
-
 template <typename T>
 std::string to_string(T value) {
     std::ostringstream os ;

@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../src/Pilha.cpp"
+
 #define SAIR -1
 #define INSTRUCAO 0
 #define MENU 1

@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 	std::vector<Telas*> listaTelas;
 	int telaAtual = INSTRUCAO;
 
-	sf::RenderWindow App(sf::VideoMode(800, 600), "Apresentação PAA");
+	sf::RenderWindow App(sf::VideoMode(800, 600), "Apresentação PAA TURMA A - Juan/Mariana");
 	App.setFramerateLimit(30);
 
     //opcao 3

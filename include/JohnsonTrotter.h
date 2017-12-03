@@ -16,8 +16,6 @@
 #include <windows.h>
 #include <fstream>
 
-#include "../src/Pilha.cpp"
-
 #define EXECUTAR 0
 #define LIMPAR 1
 #define CARTA1 2
