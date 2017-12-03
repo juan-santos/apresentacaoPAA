@@ -85,10 +85,6 @@ class Jogo : public Telas {
         sf::Sprite limpar;
         sf::Sprite executar;
 
-        //imagens com os itens/trecos
-        sf::Texture itens[10];
-        sf::Sprite mapa;
-
         //painel
         sf::Texture backgroundPainel;
         sf::Texture backgroundfundo;
@@ -96,27 +92,13 @@ class Jogo : public Telas {
         sf::Sprite background;
 
         sf::Texture texture;
-        Animation walkingAnimationDown;
-        Animation walkingAnimationLeft;
-        Animation walkingAnimationRight;
-        Animation walkingAnimationUp;
-        Animation* currentAnimation;
-
-        sf::Clock frameClock;
-        AnimatedSprite animatedSprite;
-
         bool estaExecutando;
 
-        float speed;
         bool noKeyWasPressed;
 
         //método que redesenha o jogo durante o loop
         void desenharJogo(sf::RenderWindow &App);
 
-        //verifica se existe uma proxima fase, chama os métodos de carregar e desenhar fases
-        void avancarFase(sf::RenderWindow &App);
-        //carrega a matriz da fase atual
-        void carregarMapaAtual(sf::RenderWindow &App, int fase);
         //desenha a fase atual
         void desenharFundoPlano(sf::RenderWindow &App);
 
@@ -126,38 +108,17 @@ class Jogo : public Telas {
 
         //desenha a fila que o jogador escolheu para fazer o personagem se mover
         void desenharFilaControle(sf::RenderWindow &App);
-        void desenharFilaControleF1(sf::RenderWindow &App);
-        void desenharFilaControleF2(sf::RenderWindow &App);
+
 
         Pilha<int> pilhaPermutacao;
         void JohnsonTrotter(int vetor[], int quantidade_elementos);
         void calcularPermutacoes(sf::RenderWindow &App);
         void desenharPermutacoes(sf::RenderWindow &App);
 
-        int descobrirX(const float x) const;
-        int descobrirY(const float y) const;
-        bool podeSeguir(const int x, const int y) const;
-        bool ehItemMapa(const int x, const int y) const;
-        bool estaNoIntervaloDoMapa(const int x, const int y) const;
-        int numeroItensMapa() const;
-        bool pegarItem (const int x, const int y);
-        bool morre(const int x, const int y) const;
-
-        //adiciona um controle
-        void adicionarControle();
-
-        //remove todos os controles de movimento (provisório, melhoria será remover um único item por vez)
-        void removerControle();
-
         //executa a fila de controles, verificando o caminho e movimentando o personagem
         int executarFilaControle(sf::RenderWindow &App);
-        bool observarJogador(sf::RenderWindow &App, bool movimento);
-        void resetarJogador(sf::RenderWindow &App);
 
-        bool movimentarPersonagem(sf::RenderWindow &App, Pilha<int> &pilha);
-        void verificarCaminho(float x, float y) const;
 
-        sf::Music sound;
 
     public:
         Jogo();

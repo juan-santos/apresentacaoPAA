@@ -5,12 +5,8 @@
 #include <SFML/Graphics.hpp>
 #include <ctime>
 
-#include "AnimatedSprite.h"
-#include "Jogo.h"
 #include "Menu.h"
 #include "Instrucao.h"
-#include "Vitoria.h"
-#include "Erro.h"
 #include "JohnsonTrotter.h"
 #include "LexicographicPermute.h"
 
@@ -50,18 +46,6 @@ int main(int argc, char** argv) {
     //opcao 1
 	Menu b;
 	listaTelas.push_back(&b);
-
-	//opcao 2
-	Jogo c;
-	listaTelas.push_back(&c);
-
-	//opcao 4
-	Vitoria d;
-	listaTelas.push_back(&d);
-
-	//opcao 5
-	Erro e;
-	listaTelas.push_back(&e);
 
 	//opção Lexicographic Permute
 	LexicographicPermute f;

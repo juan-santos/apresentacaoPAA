@@ -7,9 +7,7 @@
 #define INSTRUCAO 0
 #define MENU 1
 #define LEXICOGRAPHICPERMUTE 2
-#define VITORIA 3
-#define ERRO 4
-
+#define JOHNSONTROTTER 3
 
 //classe pai que conterá todas as telas
 class Telas {

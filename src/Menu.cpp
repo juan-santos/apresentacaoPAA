@@ -80,10 +80,10 @@ int Menu::Run(sf::RenderWindow &App) {
 							case 0:
 							    //jogo
                                 this->playing = true;
-                                return LEXICOGRAPHICPERMUTE;
+                                return JOHNSONTROTTER;
 							case 1:
 							    //tela de instruções
-								return INSTRUCAO;
+								return LEXICOGRAPHICPERMUTE;
 							case 2:
 							    //sair
 								return SAIR;
