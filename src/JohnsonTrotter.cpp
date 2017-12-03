@@ -37,10 +37,6 @@ int VerificarExisteMovel(elemento_jt * vetor_jt, int quantidade_elementos) {
         }
     }
 
-    /*for(int i = 0; i < quantidade_elementos; i++)
-        cout << vetor_jt[i].seta << " ";
-    cout << endl << endl;*/
-
     return x;
 }
 
@@ -132,10 +128,10 @@ JohnsonTrotter::JohnsonTrotter() {
     if(!this->backgroundPainel.loadFromFile("bin/Release/files/images/jogo/painel.jpg")){
          std::cerr << "Error loading painel" << std::endl;
     }
-
     this->painel.setPosition(600, 0);
     this->painel.setTexture(this->backgroundPainel);
 
+    /*********** FUNDO *******************/
     if(!this->backgroundfundo.loadFromFile("bin/Release/files/images/jogo/quadro.png")){
          std::cerr << "Error loading painel" << std::endl;
     }
@@ -144,7 +140,6 @@ JohnsonTrotter::JohnsonTrotter() {
     this->background.setTexture(this->backgroundfundo);
 
     /************* BOTOES ***************/
-
     if (!this->controle[CARTA1].loadFromFile("bin/Release/files/images/jogo/copas-as.png")
         ||!this->controle[CARTA2].loadFromFile("bin/Release/files/images/jogo/copas-02.png")
         ||!this->controle[CARTA3].loadFromFile("bin/Release/files/images/jogo/espada-06.png")
@@ -153,6 +148,7 @@ JohnsonTrotter::JohnsonTrotter() {
         ||!this->controle[CARTA6].loadFromFile("bin/Release/files/images/jogo/copas-dama.png")
         ||!this->controle[LIMPAR].loadFromFile("bin/Release/files/images/jogo/limpar.png")
         ||!this->controle[EXECUTAR].loadFromFile("bin/Release/files/images/jogo/executar.png")
+        ||!this->controle[SETA].loadFromFile("bin/Release/files/images/jogo/seta2.png")
         ){
         std::cout << "Can't find the ITEM" << std::endl;
     }
@@ -424,19 +420,22 @@ void JohnsonTrotter::desenharPermutacoes(sf::RenderWindow &App){
 
         for (int i = 1; i <= tamanho; i++) {
 
-            objeto.setTexture(this->controle[listaPermutacao[i-1].valor]);
-            objeto.setPosition(28+ 6*x + coluna*78, 33 + x*16 + y*135);
+            this->objeto.setTexture(this->controle[listaPermutacao[i-1].valor]);
+            this->objeto.setPosition(28+ 6*x + coluna*95, 33 + x*16 + y*135);
 
             //se for um elemento móvel, eu pinto o objeto de amarelo
             if(listaPermutacao[i-1].pintadoMovel){
                 //amarelo
-                objeto.setColor(sf::Color(223, 180, 31));
+                this->objeto.setColor(sf::Color(223, 180, 31));
+
+                this->movel.setTexture(this->controle[SETA]);
+                this->movel.setPosition(6*x + coluna*95, 33 + x*16 + y*135);
             }else{
                 if(listaPermutacao[i-1].pintadoTrocado){
                     //amarelo
-                    objeto.setColor(sf::Color(89, 238, 253));
+                    this->objeto.setColor(sf::Color(89, 238, 253));
                 }else{
-                    objeto.setColor(sf::Color(255, 255, 255));
+                    this->objeto.setColor(sf::Color(255, 255, 255));
                 }
             }
 
@@ -448,14 +447,15 @@ void JohnsonTrotter::desenharPermutacoes(sf::RenderWindow &App){
             }
 
             //se passou o numero maximo de colunas
-            if(coluna > 6){
+            if(coluna > 5){
                 y++;
                 x = 0;
                 coluna = 0;
             }
 
             App.draw(this->objeto);
-            objeto.setColor(sf::Color( 255, 255, 255 ));
+            App.draw(this->movel);
+            this->objeto.setColor(sf::Color( 255, 255, 255 ));
         }
         free(listaPermutacao);
     }
@@ -526,8 +526,7 @@ int fatorial(int numero) {//O calculo do fatorial e feito aqui
 
    int aux;
    aux = numero;
-   while(numero > 1)
-   {
+   while(numero > 1) {
       aux = aux * (numero-1);
       numero--;
    }

@@ -18,15 +18,15 @@
 
 #include "../src/Pilha.cpp"
 
-#define LIMPAR 1
 #define EXECUTAR 0
-
+#define LIMPAR 1
 #define CARTA1 2
 #define CARTA2 3
 #define CARTA3 4
 #define CARTA4 5
 #define CARTA5 6
 #define CARTA6 7
+#define SETA 8
 
 #define ESQUERDA 0
 #define DIREITA 1
@@ -46,9 +46,10 @@ class JohnsonTrotter : public Telas {
 
         Pilha<int> pilha;
         sf::Sprite objeto;
+        sf::Sprite movel;
 
         //botão
-        sf::Texture controle[8];
+        sf::Texture controle[9];
         sf::Sprite carta1;
         sf::Sprite carta2;
         sf::Sprite carta3;
