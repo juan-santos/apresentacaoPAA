@@ -1300,12 +1300,11 @@
 1512305589 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\menu.cpp
 	"Menu.h"
 
-1512351866 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\menu.h
+1512306230 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\menu.h
 	<iostream>
 	<string>
 	"cScreen.h"
 	<windows.h>
-	"AnimatedSprite.h"
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 
@@ -1336,7 +1335,7 @@
 	"Lista.h"
 	"Node.h"
 
-1512305978 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\johnsontrotter.h
+1512308683 d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\include\johnsontrotter.h
 	<iostream>
 	"cScreen.h"
 	<string>
@@ -1354,7 +1353,7 @@
 	<string>
 	<SFML/Graphics.hpp>
 
-1512305961 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\johnsontrotter.cpp
+1512309351 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\johnsontrotter.cpp
 	"JohnsonTrotter.h"
 
 1512048552 source:d:\usuários\onedrive\Área de trabalho\apresentação paa\apresentação paa\src\lexicographicpermute.cpp

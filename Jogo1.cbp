@@ -75,32 +75,22 @@
 		<Linker>
 			<Add directory="C:/Program Files (x86)/CodeBlocks/SFML/SFML-2.4.2/lib" />
 		</Linker>
-		<Unit filename="include/AnimatedSprite.h" />
-		<Unit filename="include/Animation.h" />
-		<Unit filename="include/Erro.h" />
 		<Unit filename="include/Instrucao.h" />
-		<Unit filename="include/Jogo.h" />
 		<Unit filename="include/JohnsonTrotter.h" />
 		<Unit filename="include/LexicographicPermute.h" />
 		<Unit filename="include/Lista.h" />
 		<Unit filename="include/Menu.h" />
 		<Unit filename="include/Node.h" />
 		<Unit filename="include/Pilha.h" />
-		<Unit filename="include/Vitoria.h" />
 		<Unit filename="include/cScreen.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src/AnimatedSprite.cpp" />
-		<Unit filename="src/Animation.cpp" />
-		<Unit filename="src/Erro.cpp" />
 		<Unit filename="src/Instrucao.cpp" />
-		<Unit filename="src/Jogo.cpp" />
 		<Unit filename="src/JohnsonTrotter.cpp" />
 		<Unit filename="src/LexicographicPermute.cpp" />
 		<Unit filename="src/Lista.cpp" />
 		<Unit filename="src/Menu.cpp" />
 		<Unit filename="src/Node.cpp" />
 		<Unit filename="src/Pilha.cpp" />
-		<Unit filename="src/Vitoria.cpp" />
 		<Unit filename="src/cScreen.cpp" />
 		<Extensions>
 			<code_completion />

@@ -18,9 +18,6 @@
 
 #include "../src/Pilha.cpp"
 
-#define POS_INICIAL_X 30
-#define POS_INICIAL_Y 30
-
 #define LIMPAR 1
 #define EXECUTAR 0
 
@@ -36,6 +33,7 @@
 
 typedef struct{
     int valor, seta, movel;
+    bool pintadoMovel, pintadoTrocado;
 } elemento_jt;
 
 /*
@@ -68,7 +66,6 @@ class JohnsonTrotter : public Telas {
 
         sf::Texture texture;
         bool estaExecutando;
-
         bool noKeyWasPressed;
 
         //método que redesenha o jogo durante o loop
@@ -85,15 +82,13 @@ class JohnsonTrotter : public Telas {
         void desenharFilaControle(sf::RenderWindow &App);
 
 
-        Pilha<int> pilhaPermutacao;
+        Pilha<elemento_jt> pilhaPermutacao;
         void calculaJohnsonTrotter(int vetor[], int quantidade_elementos);
         void calcularPermutacoes(sf::RenderWindow &App);
         void desenharPermutacoes(sf::RenderWindow &App);
 
         //executa a fila de controles, verificando o caminho e movimentando o personagem
         int executarFilaControle(sf::RenderWindow &App);
-
-
 
     public:
         JohnsonTrotter();

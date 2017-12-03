@@ -61,46 +61,50 @@ int EncontrarMaiorMovel(int q, elemento_jt * vetor) {
     return indice;
 }
 
-/* MÉTODOS DE RESOLUÇÃO DO PROBLEMA */
-
+/****** MÉTODOS DE RESOLUÇÃO DO PROBLEMA *******/
 void JohnsonTrotter::calculaJohnsonTrotter(int vetor[], int quantidade_elementos) {
 
     elemento_jt *vetor_jt = new elemento_jt[quantidade_elementos];
     for(int i = 0; i < quantidade_elementos; i++) {
         vetor_jt[i].valor = vetor[i];
         vetor_jt[i].seta = ESQUERDA;
+        vetor_jt[i].movel = 0;
+        vetor_jt[i].pintadoMovel = false;
+        vetor_jt[i].pintadoTrocado = false;
     }
+
+    vetor_jt[quantidade_elementos-1].pintadoMovel = true;
 
     //************ insiro na pilha
     for(int i = 0; i < quantidade_elementos; i++){
-       this->pilhaPermutacao.Insere(vetor_jt[i].valor);
-       cout << vetor_jt[i].valor << " ";
+       this->pilhaPermutacao.Insere(vetor_jt[i]);
     }
-    cout << endl;
 
     /*repete enquanto houver elementos móveis*/
-    while(VerificarExisteMovel(vetor_jt, quantidade_elementos))
-    {
+    while(VerificarExisteMovel(vetor_jt, quantidade_elementos)) {
         /*procura o maior móvel*/
         int maior_movel = EncontrarMaiorMovel(quantidade_elementos, vetor_jt);
 
         /*troca de posição*/
         elemento_jt aux;
         aux = vetor_jt[maior_movel];
-        if(vetor_jt[maior_movel].seta == ESQUERDA)
-        {
+        if(vetor_jt[maior_movel].seta == ESQUERDA) {
             vetor_jt[maior_movel] = vetor_jt[maior_movel - 1];
+            vetor_jt[maior_movel].pintadoTrocado = true;
+
             vetor_jt[maior_movel - 1] = aux;
+            vetor_jt[maior_movel - 1].pintadoMovel = true;
         }
-        else
-        {
+        else {
             vetor_jt[maior_movel] = vetor_jt[maior_movel + 1];
+            vetor_jt[maior_movel].pintadoTrocado = true;
+
             vetor_jt[maior_movel + 1] = aux;
+            vetor_jt[maior_movel + 1].pintadoMovel = true;
         }
 
         /*troca a direção dos elementos maiores*/
-        for(int i = 0; i < quantidade_elementos; i++)
-        {
+        for(int i = 0; i < quantidade_elementos; i++) {
             if (vetor_jt[i].valor > aux.valor)
             {
                 if(vetor_jt[i].seta == DIREITA)
@@ -112,16 +116,15 @@ void JohnsonTrotter::calculaJohnsonTrotter(int vetor[], int quantidade_elementos
 
         /*imprime*/
         for(int i = 0; i < quantidade_elementos; i++){
-           this->pilhaPermutacao.Insere(vetor_jt[i].valor);
-           cout << vetor_jt[i].valor << " ";
+           this->pilhaPermutacao.Insere(vetor_jt[i]);
+           vetor_jt[i].pintadoMovel = false;
+           vetor_jt[i].pintadoTrocado = false;
         }
-        cout << endl;
-
     }
     free(vetor_jt);
 }
 
-
+/****** CONSTRUTOR *******/
 JohnsonTrotter::JohnsonTrotter() {
     this->estaExecutando = false;
 
@@ -180,6 +183,7 @@ JohnsonTrotter::JohnsonTrotter() {
 
 }
 
+/****** EXECUTAR LOOP PRINCIPAL DO PROJETO *********/
 int JohnsonTrotter::Run(sf::RenderWindow &App) {
     //evento do teclado
     int executar = 0;
@@ -226,7 +230,7 @@ int JohnsonTrotter::Run(sf::RenderWindow &App) {
 }
 
 
-/****** EXECUCAO *********/
+/****** EXECUTAR PERMUTAÇÃO *********/
  int JohnsonTrotter::executarFilaControle(sf::RenderWindow &App){
 
     if(this->estaExecutando){
@@ -253,7 +257,6 @@ void JohnsonTrotter::calcularPermutacoes(sf::RenderWindow &App){
 }
 
 /***** BOTOES *****/
-
 int JohnsonTrotter::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event){
     int operacao = LEXICOGRAPHICPERMUTE;
         switch (event.type) {
@@ -404,7 +407,6 @@ int JohnsonTrotter::funcionalidadeBotao(sf::RenderWindow &App, sf::Event &event)
 }
 
 /***** DESENHAR PROGRAMA *****/
-
 void JohnsonTrotter::desenharPermutacoes(sf::RenderWindow &App){
 
     if(this->pilhaPermutacao.getTamanho() > 0){
@@ -413,22 +415,32 @@ void JohnsonTrotter::desenharPermutacoes(sf::RenderWindow &App){
         int nroElementosPermutados = pilha.getTamanho();
 
         //transformo em vetor
-        int listaPermutacao[tamanho];
+        elemento_jt listaPermutacao[tamanho];
         this->pilhaPermutacao.pilhaParaVetor(listaPermutacao, tamanho);
 
         int x = 0;
         int y = 0;
         int coluna = 0;
 
-        cout << " inicio " << endl;
         for (int i = 1; i <= tamanho; i++) {
-            cout << listaPermutacao[i] << " ";
 
-            objeto.setTexture(this->controle[listaPermutacao[i-1]]);
+            objeto.setTexture(this->controle[listaPermutacao[i-1].valor]);
             objeto.setPosition(28+ 6*x + coluna*78, 33 + x*16 + y*135);
 
+            //se for um elemento móvel, eu pinto o objeto de amarelo
+            if(listaPermutacao[i-1].pintadoMovel){
+                //amarelo
+                objeto.setColor(sf::Color(223, 180, 31));
+            }else{
+                if(listaPermutacao[i-1].pintadoTrocado){
+                    //amarelo
+                    objeto.setColor(sf::Color(89, 238, 253));
+                }else{
+                    objeto.setColor(sf::Color(255, 255, 255));
+                }
+            }
+
             if((i % nroElementosPermutados) == 0){
-                cout << " nova coluna " << endl;
                 coluna++;
                 x = 0;
             }else{
@@ -443,6 +455,7 @@ void JohnsonTrotter::desenharPermutacoes(sf::RenderWindow &App){
             }
 
             App.draw(this->objeto);
+            objeto.setColor(sf::Color( 255, 255, 255 ));
         }
         free(listaPermutacao);
     }
@@ -498,7 +511,7 @@ void JohnsonTrotter::desenharFilaControle(sf::RenderWindow &App){
     }
 }
 
-/***** Método responsável por chamar funções que desenham o programa *****/
+/***** Método responsável por chamar todas as funções que desenham no programa *****/
 void JohnsonTrotter::desenharJogo(sf::RenderWindow &App){
     App.draw(this->painel);
     App.draw(this->background);

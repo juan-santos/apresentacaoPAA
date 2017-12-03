@@ -16,7 +16,6 @@
 
 #include "cScreen.h"
 #include <windows.h>
-#include "AnimatedSprite.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
